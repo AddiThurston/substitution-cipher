@@ -2,7 +2,9 @@
 #include <fstream>
 #include <unordered_set>
 #include <map>
+#include <vector>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 
@@ -40,21 +42,30 @@ int readToString(string& s, string fileName) {
 }
 
 // reads the frequency of letters to a map
-void getCharFreq(string& s, map<char, int>& freq) {
+void getCharFreq(string& s, vector<pair<char, int> >& freq) {
+    map<char, int> freqMap;
     // initialize the frequency of the characters to 0
     for (char c = 'A'; c <= 'Z'; c++) {
-        freq.insert({c, 0});
+        freqMap.insert({c, 0});
     }
 
     for (char& c : s) {
-        freq[c]++; // increment the frequency of the current character by 1;
+        freqMap[c]++; // increment the frequency of the current character by 1;
     }
+    for (const auto& p : freqMap) {
+        freq.push_back({p.first, p.second});
+    }
+    
+}
+
+bool freqSort(pair<char, int>& a, pair<char, int>& b) {
+    return a.second > b.second;
 }
 
 int main() {
     unordered_set<string> dict; // the dictionary from dictionary.txt
     string ciphertext;  // the ciphertext from ciphertext.txt
-    map<char, int> cipherFreq; // the frequency of all letters in the ciphertext
+    vector<pair<char, int> > cipherFreq; // the frequency of all letters in the ciphertext
 
     if (readToSet(dict, "dictionary.txt") == -1) {
         return 1;
@@ -68,6 +79,7 @@ int main() {
 
     getCharFreq(ciphertext, cipherFreq);
     cout << "Done counting frequencies of ciphertext letters\n";
+    sort(cipherFreq.begin(), cipherFreq.end(), freqSort);
     for (const auto& pair : cipherFreq) {
         std::cout << pair.first << " - " << pair.second << std::endl;
     }
