@@ -81,6 +81,14 @@ bool freqSort(pair<char, int>& a, pair<char, int>& b) {
     return a.second > b.second;
 }
 
+string decrypt(string& ciphertext, string& key) {
+    string plaintext = "";
+    for (char& c : ciphertext) {
+        plaintext += key[c-'A'];
+    }
+    return plaintext;
+}
+
 int main() {
     unordered_set<string> dict; // the dictionary from dictionary.txt
     string ciphertext;  // the ciphertext from ciphertext.txt
@@ -106,6 +114,18 @@ int main() {
     for (const auto& pair : cipherFreq) {
         std::cout << pair.first << " - " << pair.second << std::endl;
     }
+    cout << endl << endl;
+    for (const auto& pair : dictFreq) {
+        std::cout << pair.first << " - " << pair.second << std::endl;
+    }
+
+    string commonTextFreq = "ETAINOSRHDCMLPUGWFYBVJKXQZ";
+    // correct frequency chart - "ETAINOSRHDCMLPUGWFYBVJKXQZ"
+    string key(26, ' ');
+    for (int i = 0; i < 26; i++) {
+        key[cipherFreq[i].first - 'A'] = commonTextFreq[i];
+    }
+    cout << decrypt(ciphertext, key) << endl;
     
     return 0;
 }
