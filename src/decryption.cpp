@@ -89,6 +89,15 @@ string decrypt(string& ciphertext, string& key) {
     return plaintext;
 }
 
+void permuteKey(string& key, char a, char b) {
+    for (char& c : key) {
+        if (c == a) {
+            c = b;
+        } else if (c == b) {
+            c = a;
+        }
+    }
+}
 
 size_t countMatches(const string& text, const unordered_set<string>& dict){
 	size_t count = 0;
