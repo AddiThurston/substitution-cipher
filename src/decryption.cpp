@@ -117,31 +117,35 @@ int main() {
     string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
     // solution's frequency chart - "ETAINOSRHDCMLPUGWFYBVJKXQZ"
 
-    // setup the key
+    // setup the key from the vector of frequencies
     string key(26, ' '); // 26 spaces
     for (int i = 0; i < 26; i++) {
         // set the key's alphabetical position of the ith most frequent cipher letter to the ith most frequent common text letter
         key[cipherFreq[i].first - 'A'] = commonTextFreq[i]; 
     }    
-    
 
-    cout << decrypt(ciphertext, key) << endl;
+    string solution = decrypt(ciphertext, key);
+    cout << solution << endl;
+    cout << "Initial Score: " << countMatches(solution, dict) << endl;
 
     string input;
+    cout << "1: Swap two letters in the key\n2: Quit\n";
     getline(cin, input);
     while (input != "2") {
         if (input == "1") {
             cout << "Which characters do you want to swap?\n";
             char a,b;
             cin >> a >> b;
-            cin.ignore();
+            getline(cin, input);
             permuteKey(key, toupper(a), toupper(b));
-            string solution = decrypt(ciphertext, key);
+            solution = decrypt(ciphertext, key);
             cout << solution << endl;
-            cout << countMatches(solution, dict) << endl;
+            cout << "Score: " << countMatches(solution, dict) << endl;
         } else {
             cout << "Invalid input\n";
         }
+        
+        cout << "1: Swap two letters in the key\n2: Quit\n";
         getline(cin, input);
     }
 
