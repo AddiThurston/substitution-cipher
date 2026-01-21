@@ -58,31 +58,13 @@ void setCipherFreq(string& s, vector<pair<char, int> >& freq) {
 
 }
 
-// reads the frequency of letters in the dictionary to a vector
-void setDictFreq(unordered_set<string>& dict, vector<pair<char, int> >& freq) {
-    map<char, int> freqMap;
-    // initialize the frequency of the characters to 0
-    for (char c = 'A'; c <= 'Z'; c++) {
-        freqMap.insert({c, 0});
-    }
-
-    for (const auto& word : dict){
-        for (char c : word) {
-            freqMap[toupper(c)]++; // increment the frequency of the current character by 1;
-        }
-    }
-    for (const auto& p : freqMap) {
-        freq.push_back({p.first, p.second});
-    }
-}
-
 // determines the character with the higher frequency to be greater
 bool freqSort(pair<char, int>& a, pair<char, int>& b) {
     return a.second > b.second;
 }
 
 string decrypt(string& ciphertext, string& key) {
-    string plaintext = "";
+    string plaintext = ""; 
     for (char& c : ciphertext) {
         plaintext += key[c-'A'];
     }
@@ -129,24 +111,17 @@ int main() {
     cout << "Done reading ciphertext file\n";
 
     setCipherFreq(ciphertext, cipherFreq);
-    cout << "Done counting frequencies of ciphertext letters\n";
+    cout << "Done counting frequency of ciphertext letters\n";
     sort(cipherFreq.begin(), cipherFreq.end(), freqSort);
-    setDictFreq(dict, dictFreq);
-    cout << "Done counting frequencies of dictionary letters\n";
-    sort(dictFreq.begin(), dictFreq.end(), freqSort);
-    for (const auto& pair : cipherFreq) {
-        std::cout << pair.first << " - " << pair.second << std::endl;
-    }
-    cout << endl << endl;
-    for (const auto& pair : dictFreq) {
-        std::cout << pair.first << " - " << pair.second << std::endl;
-    }
 
     string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
-    // correct frequency chart - "ETAINOSRHDCMLPUGWFYBVJKXQZ"
-    string key(26, ' ');
+    // solution's frequency chart - "ETAINOSRHDCMLPUGWFYBVJKXQZ"
+
+    // setup the key
+    string key(26, ' '); // 26 spaces
     for (int i = 0; i < 26; i++) {
-        key[cipherFreq[i].first - 'A'] = commonTextFreq[i];
+        // set the key's alphabetical position of the ith most frequent cipher letter to the ith most frequent common text letter
+        key[cipherFreq[i].first - 'A'] = commonTextFreq[i]; 
     }    
     
 
