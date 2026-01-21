@@ -111,7 +111,7 @@ int main() {
     cout << "Done reading ciphertext file\n";
 
     setCipherFreq(ciphertext, cipherFreq);
-    cout << "Done counting frequency of ciphertext letters\n";
+    cout << "Done counting frequency of ciphertext letters\n\n";
     sort(cipherFreq.begin(), cipherFreq.end(), freqSort);
 
     string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
@@ -125,6 +125,7 @@ int main() {
     }    
 
     string solution = decrypt(ciphertext, key);
+    cout << "Decrypted text using key: " << key << endl;
     cout << solution << endl;
     cout << "Initial Score: " << countMatches(solution, dict) << endl;
 
@@ -139,10 +140,11 @@ int main() {
             getline(cin, input);
             permuteKey(key, toupper(a), toupper(b));
             solution = decrypt(ciphertext, key);
+            cout << "Decrypted text using key: " << key << endl;
             cout << solution << endl;
             cout << "Score: " << countMatches(solution, dict) << endl;
         } else {
-            cout << "Invalid input\n";
+            cout << "Invalid input\n\n";
         }
         
         cout << "1: Swap two letters in the key\n2: Quit\n";
