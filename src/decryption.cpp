@@ -90,6 +90,10 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
 	map<char, int> unmatchedFreq;
 	map<char, int> certaintyMap;
 
+    for (size_t i = 0; i < text.length(); i++) {
+        goodBits[i] = false;
+    }
+
 	for(char c = 'A'; c<='Z'; c++){
 		matchFreq.insert({c,0});
 		unmatchedFreq.insert({c,0});
@@ -97,21 +101,22 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
 	}
 
 	for (int i = 2; i <= 8; i++){
-		for (int j = 0; j <= text.size()-i; j++){
+		for (size_t j = 0; j < text.size()-i; j++){
 			const auto& sub = text.substr(j,i);
 			auto it = dict.find(sub);
 			if (it != dict.end()){
-				for(int k = j; k <= j+i; k++){
+				for(size_t k = j; k <= j+i; k++){
 					goodBits[k] = true;
 				}
 				for(char c : sub){
 					matchFreq[c] += i;
 				}
-				count++;
+                int scores[] = {0,0,1,5,6,4,3,2,2};
+				count += scores[i];
 			}
 		}
 	}
-	for (int i = 0; i<sizeof(goodBits); i++){
+	for (size_t i = 0; i<sizeof(goodBits); i++){
 		if (goodBits[i] == true){
 			matchFreq[text[i]]++;
 		} else {
@@ -119,15 +124,19 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
 		}
 	}
 
-	cout << "Match certainty: " << endl;
-	for (const auto& p : matchFreq){
-		float matchNum = p.second;
-		float unmatchedNum = unmatchedFreq[p.first];
-		float sum = matchNum + unmatchedNum;
-		float certaintyPercent = (matchNum/sum) * 100;
+    for (size_t i = 0; i < text.length(); i++) {
+        if (goodBits[i]) count++;
+    }
 
-		cout << p.first << ": " << certaintyPercent << "%" << endl;
-	}
+	// cout << "Match certainty: " << endl;
+	// for (const auto& p : matchFreq){
+	// 	float matchNum = p.second;
+	// 	float unmatchedNum = unmatchedFreq[p.first];
+	// 	float sum = matchNum + unmatchedNum;
+	// 	float certaintyPercent = (matchNum/sum) * 100;
+
+	// 	cout << p.first << ": " << certaintyPercent << "%" << endl;
+	// }
 
 	return count;
 }
@@ -150,7 +159,11 @@ void autoDecrypt(string& key, string& ciphertext, const unordered_set<string>& d
     }
 }
 
-
+void strToUpper(string& s) {
+    for (char& c : s) {
+        c = toupper(c);
+    }
+}
 
 
 int main() {
@@ -188,29 +201,45 @@ int main() {
     cout << solution << endl;
     cout << "Initial Score: " << checkSet(solution, dict) << endl;
 
-
-
-
+    // user interaction
     string input;
-    cout << "1: Swap two letters in the key\n2: Autosolver\n3: Quit\n";
+    cout << "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Quit\n";
     getline(cin, input);
-    while (input != "3") {
-        if (input == "1") {
+    while (input != "4") {
+        if (input == "1") { // the user can swap 2 chars
             cout << "Which characters do you want to swap?\n";
             char a,b;
             cin >> a >> b;
             getline(cin, input);
             permuteKey(key, toupper(a), toupper(b));
-        } else if (input == "2") {
+        } else if (input == "2") {  // the user can let the autosolve function try to work on the text
             autoDecrypt(key, ciphertext, dict);
+        } else if (input == "3") {  // the user can input a key
+            cout << "Key: ";
+            getline(cin, input);
+            strToUpper(input);
+            // check that the key is valid
+            bool goodKey = true;
+            for (char c : commonTextFreq) {
+                if (input.find(c) == string::npos) {
+                    goodKey = false;
+                    break;
+                }
+            }
+            if (goodKey && input.length() == 26) {
+                key = input;
+            } else {
+                cout << "Invalid Key\n";
+            }
         } else {
-            cout << "Invalid input\n\n";
+            cout << "Invalid input\n";
         }
+        // print the current key, decrypted text, and score
         solution = decrypt(ciphertext, key);
-        cout << "Decrypted text using key: " << key << endl;
+        cout << "\nDecrypted text using key: " << key << endl;
         cout << solution << endl;
         cout << "Score: " << checkSet(solution, dict) << endl;
-        cout << "1: Swap two letters in the key\n2: Autosolver\n3: Quit\n";
+        cout << "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Quit\n";
         getline(cin, input);
     }
 
