@@ -223,9 +223,10 @@ int main() {
                 autoDecrypt(key, ciphertext, dict);
                 int newScore = checkSet(decrypt(ciphertext, key), dict);
                 if (newScore > bestScore) {
+                    cout << "AutoSolver improved score by " << newScore-bestScore << " points with key: " << key << endl;
                     bestScore = newScore;
                 } else if (newScore == bestScore) {
-                    cout << "The AutoSolver can no longer improve the current key\n";
+                    cout << "AutoSolver can no longer improve the current key\n";
                     break;
                 }
             }
