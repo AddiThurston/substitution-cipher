@@ -111,11 +111,12 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
 				for(char c : sub){
 					matchFreq[c] += i;
 				}
-                int scores[] = {0,0,1,5,6,4,3,2,2};
+                int scores[] = {0,0,1,5,6,4,4,4,5};
 				count += scores[i];
 			}
 		}
 	}
+
 	for (size_t i = 0; i<sizeof(goodBits); i++){
 		if (goodBits[i] == true){
 			matchFreq[text[i]]++;
@@ -127,8 +128,7 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
     for (size_t i = 0; i < text.length(); i++) {
         if (goodBits[i]) count++;
     }
-
-	// cout << "Match certainty: " << endl;
+    // cout << "Match certainty: " << endl;
 	// for (const auto& p : matchFreq){
 	// 	float matchNum = p.second;
 	// 	float unmatchedNum = unmatchedFreq[p.first];
@@ -137,28 +137,31 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
 
 	// 	cout << p.first << ": " << certaintyPercent << "%" << endl;
 	// }
-
 	return count;
 }
 
-
+// attempt to automatically decrypt the ciphertext by 
 void autoDecrypt(string& key, string& ciphertext, const unordered_set<string>& dict) {
     int highScore = checkSet(decrypt(ciphertext, key), dict);
+    string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
 
-    for (char a = 'A'; a <= 'Z'; a++) {
-        for (char b = 'A'; b <= 'Z'; b++) {
-            if (a == b) continue;
+    for (size_t i = 0; i < commonTextFreq.length(); i++) {
+        char a = commonTextFreq[i];
+        string bestKey = key;
+        for (size_t j = i+1; j <= i+4 && j < commonTextFreq.length(); j++) {
+            char b = commonTextFreq[j];
             permuteKey(key, a, b);
             int score = checkSet(decrypt(ciphertext, key), dict);
             if (score > highScore) {
                 highScore = score;
-            } else {
-                permuteKey(key, a, b);
+                bestKey = key;
             }
         }
+        key = bestKey;
     }
 }
 
+// helper function to turn the user inputted keys to uppercase
 void strToUpper(string& s) {
     for (char& c : s) {
         c = toupper(c);
@@ -197,15 +200,17 @@ int main() {
     }
 
     string solution = decrypt(ciphertext, key);
-    cout << "Decrypted text using key: " << key << endl;
+    cout << "Corresponding alphabet:     " << "ABCDEFGHIJKLMNOPQRSTUVWXYZ" << endl;
+    cout << "Letters remapped using key: " << key << endl;
     cout << solution << endl;
     cout << "Initial Score: " << checkSet(solution, dict) << endl;
 
     // user interaction
     string input;
-    cout << "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Quit\n";
+    string options = "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Check Ciphertext Letter Frequency\n5: Quit\n";
+    cout << options;
     getline(cin, input);
-    while (input != "4") {
+    while (input != "5") {
         if (input == "1") { // the user can swap 2 chars
             cout << "Which characters do you want to swap?\n";
             char a,b;
@@ -231,15 +236,20 @@ int main() {
             } else {
                 cout << "Invalid Key\n";
             }
+        } else if (input == "4") {  // display the ciphertext letter frequency
+            for (const auto& pair : cipherFreq) {
+                cout << pair.first << " - " << pair.second << std::endl;
+            }
         } else {
             cout << "Invalid input\n";
         }
         // print the current key, decrypted text, and score
         solution = decrypt(ciphertext, key);
-        cout << "\nDecrypted text using key: " << key << endl;
+        cout << "\nCorresponding alphabet:     " << "ABCDEFGHIJKLMNOPQRSTUVWXYZ" << endl;
+        cout << "Letters remapped using key: " << key << endl;
         cout << solution << endl;
         cout << "Score: " << checkSet(solution, dict) << endl;
-        cout << "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Quit\n";
+        cout << options;
         getline(cin, input);
     }
 
