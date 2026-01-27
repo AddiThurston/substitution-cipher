@@ -207,7 +207,7 @@ int main() {
 
     // user interaction
     string input;
-    string options = "1: Swap two letters in the key\n2: Autosolver\n3: Input Key\n4: Check Ciphertext Letter Frequency\n5: Quit\n";
+    string options = "1: Swap Two Letters in the Key\n2: AutoSolver\n3: Input Key\n4: Check Ciphertext Letter Frequency\n5: Quit\n";
     cout << options;
     getline(cin, input);
     while (input != "5") {
@@ -218,7 +218,17 @@ int main() {
             getline(cin, input);
             permuteKey(key, toupper(a), toupper(b));
         } else if (input == "2") {  // the user can let the autosolve function try to work on the text
-            autoDecrypt(key, ciphertext, dict);
+            int bestScore = checkSet(decrypt(ciphertext, key), dict);
+            for (int i = 0; i < 5; i++) {
+                autoDecrypt(key, ciphertext, dict);
+                int newScore = checkSet(decrypt(ciphertext, key), dict);
+                if (newScore > bestScore) {
+                    bestScore = newScore;
+                } else if (newScore == bestScore) {
+                    cout << "The AutoSolver can no longer improve the current key\n";
+                    break;
+                }
+            }
         } else if (input == "3") {  // the user can input a key
             cout << "Key: ";
             getline(cin, input);
