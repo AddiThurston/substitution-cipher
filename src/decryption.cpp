@@ -81,7 +81,6 @@ void permuteKey(string& key, char a, char b) {
     }
 }
 
-
 size_t checkSet(const string& text, const unordered_set<string>& dict){
 	string word;
 	size_t count = 0;
@@ -168,6 +167,9 @@ void strToUpper(string& s) {
     }
 }
 
+string frequencyToString(vector<pair<char, int> >& v) {
+    
+}
 
 int main() {
     unordered_set<string> dict; // the dictionary from dictionary.txt
@@ -203,14 +205,16 @@ int main() {
     cout << "Corresponding alphabet:     " << "ABCDEFGHIJKLMNOPQRSTUVWXYZ" << endl;
     cout << "Letters remapped using key: " << key << endl;
     cout << solution << endl;
-    cout << "Initial Score: " << checkSet(solution, dict) << endl;
+    int highscore = checkSet(solution, dict);
+    string bestKey = key;
+    cout << "Initial Score: " << highscore << endl;
 
     // user interaction
     string input;
-    string options = "1: Swap Two Letters in the Key\n2: AutoSolver\n3: Input Key\n4: Check Ciphertext Letter Frequency\n5: Quit\n";
+    string options = "1: Swap Two Letters in the Key\n2: AutoSolver\n3: Input Key\n4: Check Ciphertext Letter Frequency\n5: Display Highest Score & Best Key\n6: Quit\n";
     cout << options;
     getline(cin, input);
-    while (input != "5") {
+    while (input != "6") {
         if (input == "1") { // the user can swap 2 chars
             cout << "Which characters do you want to swap?\n";
             char a,b;
@@ -251,15 +255,25 @@ int main() {
             for (const auto& pair : cipherFreq) {
                 cout << pair.first << " - " << pair.second << std::endl;
             }
+        } else if (input == "5") {
+            cout << "High Score: " << highscore << endl;
+            cout << "Best Key: " << bestKey << endl;
         } else {
             cout << "Invalid input\n";
         }
-        // print the current key, decrypted text, and score
+        
         solution = decrypt(ciphertext, key);
+        int score = checkSet(solution, dict);
+        if (score > highscore) {
+            highscore = score;
+            bestKey = key;
+        }
+
+        // print the current key, decrypted text, and score
         cout << "\nCorresponding alphabet:     " << "ABCDEFGHIJKLMNOPQRSTUVWXYZ" << endl;
         cout << "Letters remapped using key: " << key << endl;
         cout << solution << endl;
-        cout << "Score: " << checkSet(solution, dict) << endl;
+        cout << "Score: " << score << endl;
         cout << options;
         getline(cin, input);
     }
