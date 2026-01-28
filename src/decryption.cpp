@@ -81,6 +81,11 @@ void permuteKey(string& key, char a, char b) {
     }
 }
 
+
+//Creates a certainty score based on whether or not letters appear more fequently
+//in dictionary matched substrings or "nonsense" strings". Gives higher weight to
+//letters found in longer words. Works mostly as a helper for autochecker to keep
+//it from prioritizing garbage two letter words.
 size_t checkSet(const string& text, const unordered_set<string>& dict){
 	string word;
 	size_t count = 0;
@@ -127,19 +132,11 @@ size_t checkSet(const string& text, const unordered_set<string>& dict){
     for (size_t i = 0; i < text.length(); i++) {
         if (goodBits[i]) count++;
     }
-    // cout << "Match certainty: " << endl;
-	// for (const auto& p : matchFreq){
-	// 	float matchNum = p.second;
-	// 	float unmatchedNum = unmatchedFreq[p.first];
-	// 	float sum = matchNum + unmatchedNum;
-	// 	float certaintyPercent = (matchNum/sum) * 100;
-
-	// 	cout << p.first << ": " << certaintyPercent << "%" << endl;
-	// }
 	return count;
 }
 
-// attempt to automatically decrypt the ciphertext by 
+//Attempt to automatically decrypt the ciphertext by permuting the key
+//until the key with the highest certainty score is obtained.
 void autoDecrypt(string& key, string& ciphertext, const unordered_set<string>& dict) {
     int highScore = checkSet(decrypt(ciphertext, key), dict);
     string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
