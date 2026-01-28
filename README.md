@@ -1,4 +1,4 @@
-# permutation-cypher
+# substitution-cipher
 ## CSCI4530 Project 1
 ### Team: Addison Thurston and William Kraus
 
