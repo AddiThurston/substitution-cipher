@@ -214,7 +214,11 @@ int main() {
             char a,b;
             cin >> a >> b;
             getline(cin, input);
-            permuteKey(key, toupper(a), toupper(b));
+            if (commonTextFreq.find(toupper(a)) == string::npos ||commonTextFreq.find(toupper(b)) == string::npos) {
+                cout << "At least one of those characters is not in the key.\n";
+            } else {
+                permuteKey(key, toupper(a), toupper(b));
+            }
         } else if (input == "2") {  // the user can let the autosolve function try to work on the text
             int bestScore = checkSet(decrypt(ciphertext, key), dict);
             for (int i = 0; i < 5; i++) {
@@ -249,7 +253,7 @@ int main() {
             for (const auto& pair : cipherFreq) {
                 cout << pair.first << " - " << pair.second << std::endl;
             }
-        } else if (input == "5") {
+        } else if (input == "5") {  // display the high score and the best key so far
             cout << "High Score: " << highscore << endl;
             cout << "Best Key: " << bestKey << endl;
         } else {
