@@ -84,8 +84,8 @@ void permuteKey(string& key, char a, char b) {
 
 //Creates a certainty score based on whether or not letters appear more fequently
 //in dictionary matched substrings or "nonsense" strings". Gives higher weight to
-//letters found in longer words. Works mostly as a helper for autochecker to keep
-//it from prioritizing garbage two letter words.
+//letters found in longer words (max score around 4 letters). Works mostly as a 
+//helper for autochecker to keep it from prioritizing garbage two letter words.
 size_t checkSet(const string& text, const unordered_set<string>& dict){
 	string word;
 	size_t count = 0;
@@ -141,10 +141,11 @@ void autoDecrypt(string& key, string& ciphertext, const unordered_set<string>& d
     int highScore = checkSet(decrypt(ciphertext, key), dict);
     string commonTextFreq = "ETAOINSHRDLCUMWFGYPBVKJXQZ";
 
-    for (size_t i = 0; i < commonTextFreq.length(); i++) {
+    for (size_t i = 0; i < commonTextFreq.length(); i++) {  // loop through the characters in order of frequency in english
         char a = commonTextFreq[i];
         string bestKey = key;
-        for (size_t j = i+1; j <= i+4 && j < commonTextFreq.length(); j++) {
+        for (size_t j = i+1; j <= i+4 && j < commonTextFreq.length(); j++) {    
+            // try swapping with the next 4 most frequent letters to see if it increases our score
             char b = commonTextFreq[j];
             permuteKey(key, a, b);
             int score = checkSet(decrypt(ciphertext, key), dict);
@@ -162,10 +163,6 @@ void strToUpper(string& s) {
     for (char& c : s) {
         c = toupper(c);
     }
-}
-
-string frequencyToString(vector<pair<char, int> >& v) {
-    
 }
 
 int main() {
